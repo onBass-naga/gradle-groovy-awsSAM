@@ -1,0 +1,54 @@
+
+allprojects {
+    apply plugin: 'groovy'
+    apply plugin: 'idea'
+}
+
+subprojects {
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.13'
+        compile group: 'com.amazonaws', name: 'aws-lambda-java-core', version: '1.2.0'
+        compile group: 'com.amazonaws', name: 'aws-lambda-java-events', version: '1.2.0'
+
+        testCompile 'junit:junit:4.12'
+    }
+
+    task initSrcDirs {
+        doLast {
+            sourceSets.all {
+                groovy.srcDirs*.mkdirs()
+                resources.srcDirs*.mkdirs()
+            }
+        }
+    }
+
+    task buildZip(type: Zip) {
+        from compileGroovy
+        from processResources
+        into('lib') {
+            from configurations.runtime
+        }
+    }
+
+    build.dependsOn buildZip
+
+    // 本当はfunctionsの下のサブプロジェクトのみ変更したい
+    buildDir = "$rootDir/.build"
+}
+
+project(':functions/request') {
+    dependencies {
+        compile project(':modules/shared')
+    }
+}
+
+project(':functions/error') {
+    dependencies {
+        compile project(':modules/shared')
+    }
+}

@@ -1,0 +1,8 @@
+
+rootProject.name = 'gradle-groovy-awsSAM'
+
+include 'modules/shared'
+
+include 'functions/error'
+include 'functions/request'
+

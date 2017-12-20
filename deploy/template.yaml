@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Simple CRUD webservice. State is stored in a SimpleTable (DynamoDB) resource.
+Resources:
+  EchoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./request.zip
+      Handler: com.example.request.Handler::handleRequest
+      Runtime: java8
+      Timeout: 3
+      MemorySize: 128
+      Events:
+        GetResource:
+          Type: Api
+          Properties:
+            Path: /request/{pathValue}
+            Method: get
+        GetResource:
+          Type: Api
+          Properties:
+            Path: /request/{value1}/{value2}
+            Method: get
+        PostResource:
+          Type: Api
+          Properties:
+            Path: /request
+            Method: post
+        PutResource:
+          Type: Api
+          Properties:
+            Path: /request
+            Method: put
+        DeleteResource:
+          Type: Api
+          Properties:
+            Path: /request
+            Method: delete
+  ErrorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./error.zip
+      Handler: com.example.error.Handler::handleRequest
+      Runtime: java8
+      Timeout: 3
+      MemorySize: 128
+      Events:
+        GetResource:
+          Type: Api
+          Properties:
+            Path: /error
+            Method: get
+
